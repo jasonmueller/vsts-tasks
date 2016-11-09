@@ -30,10 +30,11 @@ export function isSonarQubeAnalysisEnabled(): boolean {
 /**
  * Apply all parameters necessary for SonarQube operation to the given ToolRunner.
  * @param toolRunner Master ToolRunner object that will be executed on the command line.
+ * @param reportFileName Name of file SonarQube should write its report to
  * @returns {ToolRunner}
  */
-export function applySonarQubeParameters(toolRunner: ToolRunner): ToolRunner {
-    return SonarQubeParameterHelper.applySonarQubeParameters(toolRunner);
+export function applySonarQubeParameters(toolRunner: ToolRunner, reportFileName: string): ToolRunner {
+    return SonarQubeParameterHelper.applySonarQubeParameters(toolRunner, reportFileName);
 }
 
 /**

@@ -13,12 +13,16 @@ export class SonarQubeParameterHelper {
     /**
      * Applies parameters for SonarQube features enabled by the user.
      * @param toolRunner     ToolRunner to add parameters to
-     * @returns {ToolRunner} ToolRunner with parameters added
+     * @param reportFileName (Optional) Name of file SonarQube should write its report to
+     * @returns {ToolRunner}
      */
-    public static applySonarQubeParameters(toolRunner: ToolRunner): ToolRunner {
+    public static applySonarQubeParameters(toolRunner: ToolRunner, reportFileName?: string): ToolRunner {
+        if (reportFileName == null) {
+            reportFileName = 'sonar-report.json';
+        }
         toolRunner = SonarQubeParameterHelper.applySonarQubeConnectionParams(toolRunner);
         toolRunner = SonarQubeParameterHelper.applySonarQubeAnalysisParams(toolRunner);
-        toolRunner = SonarQubeParameterHelper.applySonarQubeIssuesModeInPrBuild(toolRunner);
+        toolRunner = SonarQubeParameterHelper.applySonarQubeIssuesModeInPrBuild(toolRunner, reportFileName);
         return toolRunner;
     }
 
@@ -79,14 +83,15 @@ export class SonarQubeParameterHelper {
     /**
      * Applies parameters that will run SQ analysis in issues mode if this is a pull request build
      * @param toolRunner     ToolRunner to add parameters to
+     * @param reportFileName Name of file SonarQube should write its report to
      * @returns {ToolRunner} ToolRunner with parameters added
      */
-    private static applySonarQubeIssuesModeInPrBuild(toolrunner: ToolRunner): ToolRunner {
+    private static applySonarQubeIssuesModeInPrBuild(toolrunner: ToolRunner, reportFileName: string): ToolRunner {
         if (VstsServerUtils.isPrBuild()) {
             console.log(tl.loc('sqAnalysis_IncrementalMode'));
 
             toolrunner.arg("-Dsonar.analysis.mode=issues");
-            toolrunner.arg("-Dsonar.report.export.path=sonar-report.json");
+            toolrunner.arg(`-Dsonar.report.export.path=${reportFileName}`);
         }
         else
         {

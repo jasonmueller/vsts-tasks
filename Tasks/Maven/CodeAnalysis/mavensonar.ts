@@ -18,7 +18,9 @@ export function applySonarQubeArgs(mvnsq: ToolRunner, execFileJacoco?: string): 
         return mvnsq;
     }
 
-    mvnsq = sqCommon.applySonarQubeParameters(mvnsq);
+    var reportPath = path.join(tl.getVariable('build.sourcesDirectory'), 'target', 'sonar', 'sonar-report.json');
+    tl.setVariable('PRCA_REPORT_PATH', reportPath);
+    mvnsq = sqCommon.applySonarQubeParameters(mvnsq, path.basename(reportPath));
 
     // Apply argument for the JaCoCo tool, if enabled
     if (typeof execFileJacoco != "undefined" && execFileJacoco) {
